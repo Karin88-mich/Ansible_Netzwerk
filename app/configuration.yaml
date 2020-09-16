@@ -1,0 +1,40 @@
+- name: This is a hello-world example
+  hosts: localhost
+  tasks: 
+    - name: create webserver image
+      docker_image:
+        name: webapp-ansible_new
+        pull: no
+        build: 
+          path: .
+        source: build
+        #ports: "8080:80" 
+        #volumes: 
+        #- /mnt/c/Users/KarinaMichalczyk/Documents/Academic_Work/Ansible/app/:/usr/share/nginx/html
+    - name: create loadbalancer image
+      docker_image:
+        name: loadbalancer_ansible
+        pull: no
+        build: 
+          path: /mnt/c/Users/KarinaMichalczyk/Documents/Academic_Work/Ansible/loadbalancer-config/
+        source: build
+    - name: create network
+      docker_network:
+        name: hello_karina
+    - name: create hello container
+      docker_container:
+          name: hello{{ item }}
+          image: webapp-ansible_new:latest
+          networks: 
+            - name: hello_karina
+      with_sequence: count=4     
+    - name: create container for loadbalancer
+      docker_container:
+          name: loadbalancer_container
+          image: loadbalancer_ansible
+          networks: 
+            - name: hello_karina
+            
+
+
+        

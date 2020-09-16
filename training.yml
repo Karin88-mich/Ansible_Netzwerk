@@ -1,0 +1,12 @@
+---
+  - name: name of playbook
+    hosts: localhost
+    tasks:
+    - name: build webserver image
+      docker_image:
+        name: mywebapp:3:117:35
+        pull: no
+        build:
+          path: .
+        source: build    
+    
